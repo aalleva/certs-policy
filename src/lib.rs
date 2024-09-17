@@ -1,11 +1,9 @@
 // Copyright 2023 Salesforce, Inc. All rights reserved.
 mod generated;
 
-use anyhow::{anyhow, Result};
-
+use anyhow::Result;
 use pdk::hl::*;
 use pdk::logger;
-use crate::generated::config::Config;
 
 pub struct Subject {
     name: String,
