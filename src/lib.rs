@@ -5,6 +5,9 @@ use anyhow::Result;
 use pdk::hl::*;
 use pdk::logger;
 
+const EMAIL_SUBJECT_PREAMBLE: &str = "emailAddress=";
+const NAME_SUBJECT_PREAMBLE: &str = "CN=";
+
 pub struct Subject {
     name: String,
     email: String,
@@ -24,14 +27,23 @@ async fn request_filter(request_state: RequestState, stream: StreamProperties) -
     let headers_state = request_state.into_headers_state().await;
     
     match parse_subject() {
-        Ok(subject) => {
-            logger::info!("Subject: {}", subject.name);
-            logger::info!("Email: {}", subject.email);
+        Ok(resp) => {
+            logger::info!("Subject: {}", resp.name);
+            logger::info!("Email: {}", resp.email);
+            logger::info!("Request URL: {:?}", headers_state.handler().headers());
+
+            headers_state
+                .handler()
+                .set_header("X-Peer-Name", resp.name.as_str());
+            headers_state
+                .handler()
+                .set_header("X-Peer-Email", resp.email.as_str());
+
             logger::info!("Request URL: {:?}", headers_state.handler().headers());
             Flow::Continue(())
         }
-        Err(e) => {
-            Flow::Break(Response::new(401))
+        Err(err) => {
+            Flow::Break(Response::new(401).with_body(err.to_string()))
         }
     }
 
