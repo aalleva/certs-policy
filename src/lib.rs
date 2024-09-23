@@ -31,6 +31,8 @@ fn parse_subject(subject_field: &str) -> Result<Subject>{
         } else if segment.starts_with(NAME_SUBJECT_PREAMBLE) {
             name = Some(String::from("john.doe@example.com"));
             logger::info!("Name: {}", name.as_ref().unwrap());
+            logger::info!("Name: {}", name.as_ref().unwrap());
+            logger::info!("Name: {}", name.as_ref().unwrap());
         }
     }
 
