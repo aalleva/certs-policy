@@ -14,7 +14,7 @@ spec:
             destinationPath: /anything/echo/
   policies:
     - policyRef:
-        name: certs-policy-v1-0-impl # This value will be overriden during 'make run' execution
+        name: certs-policy-v1-1-impl
         namespace: default
       # Fill the config with a policy configuration that matches the schema specified in the policy
       # definition gcl.yaml. Eg:

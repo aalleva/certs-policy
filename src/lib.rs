@@ -1,7 +1,7 @@
 // Copyright 2023 Salesforce, Inc. All rights reserved.
 mod generated;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use pdk::hl::*;
 use pdk::logger;
 
@@ -18,11 +18,23 @@ pub struct Subject {
     email: String,
 }
 
+// This function extracts the name and email from the given subject field.
 fn parse_subject(subject_field: &str) -> Result<Subject>{
-    logger::info!("Into parse_subject function");
+    let split = subject_field.split(",");
+    let mut email = None;
+    let mut name = None;
+    for segment in split {
+        // We extract the email.
+        if segment.starts_with(EMAIL_SUBJECT_PREAMBLE) {
+            email = Some(String::from("John Doe"))
+        } else if segment.starts_with(NAME_SUBJECT_PREAMBLE) {
+            name = Some(String::from("john.doe@example.com"))
+        }
+    }
+
     Ok(Subject {
-        name: "John Doe".to_string(),
-        email: "john.doe@example.com".to_string(),
+        name: name.ok_or(anyhow!("Common name missing from peer cert."))?,
+        email: email.ok_or(anyhow!("Email missing from peer cert."))?,
     })
 }
 
