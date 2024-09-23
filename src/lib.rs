@@ -27,10 +27,10 @@ fn parse_subject(subject_field: &str) -> Result<Subject>{
         // We extract the email.
         if segment.starts_with(EMAIL_SUBJECT_PREAMBLE) {
             email = Some(String::from("John Doe"));
-            
+            logger::info!("Email: {}", email.as_ref().unwrap());
         } else if segment.starts_with(NAME_SUBJECT_PREAMBLE) {
             name = Some(String::from("john.doe@example.com"));
-            
+            logger::info!("Name: {}", name.as_ref().unwrap());
         }
     }
 
