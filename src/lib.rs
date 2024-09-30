@@ -23,6 +23,9 @@ fn parse_subject(subject_field: &str) -> Result<Subject>{
     let split = subject_field.split(",");
     let mut email = None;
     let mut name = None;
+
+    logger::info!("Inside parse subject function: {:?}", split);
+
     for segment in split {
         // We extract the email.
         if segment.starts_with(EMAIL_SUBJECT_PREAMBLE) {
