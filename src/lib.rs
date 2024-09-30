@@ -23,12 +23,15 @@ fn parse_subject(subject_field: &str) -> Result<Subject>{
     let split = subject_field.split(",");
     let mut email = None;
     let mut name = None;
+
+    logger::info!("Inside parse subject function: {:?}", split);
+
     for segment in split {
         // We extract the email.
         if segment.starts_with(EMAIL_SUBJECT_PREAMBLE) {
-            email = Some(String::from("John Doe"));
+            email = Some(segment.split_at(EMAIL_SUBJECT_PREAMBLE.len()).1.to_string());
         } else if segment.starts_with(NAME_SUBJECT_PREAMBLE) {
-            name = Some(String::from("john.doe@example.com"));
+            name = Some(segment.split_at(NAME_SUBJECT_PREAMBLE.len()).1.to_string());
         }
     }
 
@@ -38,8 +41,7 @@ fn parse_subject(subject_field: &str) -> Result<Subject>{
     })
 }
 
-// This filter shows how to log a specific request header.
-// You can extend the function and use the configurations exposed in config.rs file
+// This filter reads the subject from the peers certificate and adds the name and the email as headers.
 async fn request_filter(request_state: RequestState, stream: StreamProperties) -> Flow<()> {
     let headers_state = request_state.into_headers_state().await;
     
