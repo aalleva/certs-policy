@@ -3,9 +3,15 @@
 apiVersion: gateway.mulesoft.com/v1alpha1
 kind: ApiInstance
 metadata:
-  name: ingress-http
+  #name: ingress-http
+  name: ingress-https-tls
 spec:
-  address: http://0.0.0.0:8081
+  targetRef:
+    kind: Selector
+    selector:
+      kind: ApiInstance
+  #address: http://0.0.0.0:8081
+  address: https://0.0.0.0:8081
   services:
     upstream:
       address: http://backend
@@ -16,8 +22,87 @@ spec:
     - policyRef:
         name: certs-policy-v1-6-impl
         namespace: default
-      # Fill the config with a policy configuration that matches the schema specified in the policy
-      # definition gcl.yaml. Eg:
-      # config:
-      #   someProperty: desiredValue
-      config: {}
+        # Fill the config with a policy configuration that matches the schema specified in the policy
+        # definition gcl.yaml. Eg:
+        # config:
+        #   someProperty: desiredValue
+        config: {}
+    - policyRef:
+        name: tls
+        namespace: default
+        config:
+          requireClientCertificate: false
+          certificate:
+            key: |
+              -----BEGIN PRIVATE KEY-----
+              MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDGx6VCLn7lQbF5
+              wL+ayE4L6oRffsVskv+apbMUVwgI7cTIRd+QN6EO54eMiS/Ov6sDe4YHL/yQKW9f
+              zTbbidfT2LgNk4RtTeSeyS80rD1ismNMT6/LOszQqaCcHcZFAzN1106poJLUixum
+              RHrqvSlB/JpwlOShJz+XE2vubYrUqRYxy2It1g5IjYJukjQfONS9jn+7MQgqhYnz
+              DTjajxZBSQpDEZmAK3udS99QB5nEpcjsKFwJQY9dPSLRhJgnh0pVmryKmeIsmsWc
+              mWxmAvv0jSFN6cIu3RZvgz4pY1whxWPh3zTOrBrLMqUTVCTOwIWfg93PvqAuQ9DB
+              C13C41bjAgMBAAECggEAAVf6Iv9jdjNCets1sFsoQ+Za7LZTqU85EReLpViNQlox
+              GVV3lGb73Ljt7qJCw3gCNOzR1Byb7XGKQjCF7Wf6IIF3hQf5Pi/nmrcrbYS4iYFB
+              MJPdUVddaQ+seUGuRGsoHuTMsFLYiz1Be5c86XdL3xlRBe/Lt9cnE+NauGrfJF7Z
+              LJJPZmTQRC7GYXnb5hlPZAC00TkrR8Gq1/4jWp5raJNWsX1MZnVmcE+OMb40Mnrp
+              XDwiFc9/wE0nipulm0Kx/J9faJxtl0wH1vdSz5ZBBNtWWQJioqCaaG27BpUteAA8
+              FLeO6PCSKfCYvvP+04oYOTJ+dcuyX/ZCoIoLUoGreQKBgQDuwukTedI3JTol4POM
+              DE1tJ2QPaDBJqc5zAGkxkbLDstpM054q1C5nr4pK5SSSNOgn1ADMZ8gGdkVkFwpR
+              M6W3vAHVxl3htkjQqLvpFqcrA1HZCO7d7+T5IBIQSJtD1iK7CnHvDFtIzJKVZ6yu
+              GeyBtZfpOb0FDT/ReFgMj+BADwKBgQDVIb8SxmI7HPHzz+/rtcKrmGvXzhlNSB0G
+              9rJGae44jgA1u7xPB2ifXUo+uBemqRrChtJtkYjQGLhE7vSp0sSJK5e6R4HO7G0J
+              whLOfGVKO5JsebikGB0UC8AWAQZ52orrU00gfLFEHowEX4YTAJNuEx1F5j2bU4B6
+              fOZAH15n7QKBgQDPOPtxm9mHYxgEqCi49DR++CEv/g1q4aX8ye6CxyGQGDq/UyuD
+              oIRmGUS9nAMRojmb17SZs7k3Yo73P8gEkf7SaKpvD6uLqtmnv8rXkoGkI012QPqQ
+              RRVF4z/KQjn/tmqOS5J3FxJjLKpMYZ7NvFI4gZNHKIWVTNqGwxwoSvcmoQKBgF4M
+              CRuIzNnW2PFERVNWnjNIC/ZrbIDMnHpxK5OktMjh6DfNwreAxmrkKJnqdA1Hu5Yx
+              FfPhb2ScM9u/MdkqNy1sPgSl/yLG8wqGR/QzsiKCjQcu4woN1e79jGJpS2lDxV84
+              H+WBAFvVuuVHHYuPCn9dEeLBSVgcDap/KL8M2IS1AoGBAOVDqsq0OrIq62/wePUL
+              gHt+eo3YgYsiTTUqw5JHxQBp0I0g73MpVmu+j9Jnjvap0D5b39Fs3eRJ0/5OWQ3k
+              tz5xmx+BFW+RX9ahJNuE/x+gjH76YiufBY8LQqw1lmUdIXNV9ZWARcKQ1c+0j7si
+              d1ZSx71CuwniGO7dqS0LVdO2
+              -----END PRIVATE KEY-----
+            crt: |
+              -----BEGIN CERTIFICATE-----
+              MIID3zCCAsegAwIBAgIUU56GvQfJNz5NglnfLxVRe1Ir49UwDQYJKoZIhvcNAQEL
+              BQAwgZcxCzAJBgNVBAYTAkdCMQ8wDQYDVQQIDAZMb25kb24xDzANBgNVBAcMBkxv
+              bmRvbjEaMBgGA1UECgwRWW91ciBPcmdhbml6YXRpb24xFjAUBgNVBAsMDUlUIERl
+              cGFydG1lbnQxETAPBgNVBAMMCGFjbWUuY29tMR8wHQYJKoZIhvcNAQkBFhBzdXBw
+              b3J0QGFjbWUuY29tMB4XDTI0MDkzMDA4MDUxMFoXDTI1MDkzMDA4MDUxMFowgZcx
+              CzAJBgNVBAYTAkdCMQ8wDQYDVQQIDAZMb25kb24xDzANBgNVBAcMBkxvbmRvbjEa
+              MBgGA1UECgwRWW91ciBPcmdhbml6YXRpb24xFjAUBgNVBAsMDUlUIERlcGFydG1l
+              bnQxETAPBgNVBAMMCGFjbWUuY29tMR8wHQYJKoZIhvcNAQkBFhBzdXBwb3J0QGFj
+              bWUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxselQi5+5UGx
+              ecC/mshOC+qEX37FbJL/mqWzFFcICO3EyEXfkDehDueHjIkvzr+rA3uGBy/8kClv
+              X80224nX09i4DZOEbU3knskvNKw9YrJjTE+vyzrM0KmgnB3GRQMzdddOqaCS1Isb
+              pkR66r0pQfyacJTkoSc/lxNr7m2K1KkWMctiLdYOSI2CbpI0HzjUvY5/uzEIKoWJ
+              8w042o8WQUkKQxGZgCt7nUvfUAeZxKXI7ChcCUGPXT0i0YSYJ4dKVZq8ipniLJrF
+              nJlsZgL79I0hTenCLt0Wb4M+KWNcIcVj4d80zqwayzKlE1QkzsCFn4Pdz76gLkPQ
+              wQtdwuNW4wIDAQABoyEwHzAdBgNVHQ4EFgQU/67txO4ofd/fVe+Bx3GPF5+ct8Yw
+              DQYJKoZIhvcNAQELBQADggEBABdwIVr7OPsNC+N+nXlCpEM81GkMosvTQ3BKilhg
+              7wDNsU2YFE1w7KB5E8THOJEMM20OYicF6jA/2vWZZG/WxjSL4ZIlmUXUAZGRxj6R
+              PHrOjX8HfOVkANRd3ELUA+cle6AP3p5ZLpHJR59jguH7cJ4jjk8Ijn0l+ELjk6Z7
+              GKMDSWBsFLop98X+OiykQ8pFNlzLafcn27pBGL2yVimPqQSJT7ax7M7cx+9qmZk3
+              sx2nlc0HJMDdZraDzR9q0q3Hr2kXnqWQorva/YpnQTWJw8EPdKVZD3f5Yx/UGfOP
+              K4HRYVdZI2ED0jpR8Pj+4exKVtSl1iEPfJlLuwQHCxUVc+4=
+              -----END CERTIFICATE-----
+          alpn:
+            - http/1.1
+            - h2
+          minversion: "1.1"
+          maxversion: "1.3"
+          ciphers:
+            - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            - TLS_CHACHA20_POLY1305_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+            - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            - TLS_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_RSA_WITH_AES_128_CBC_SHA
+            - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            - TLS_RSA_WITH_AES_256_GCM_SHA384
+            - TLS_RSA_WITH_AES_256_CBC_SHA

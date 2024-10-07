@@ -5,7 +5,7 @@ mod common;
 use httpmock::MockServer;
 use pdk_test::{pdk_test, TestComposite};
 use pdk_test::port::Port;
-use pdk_test::services::flex::{FlexConfig, Flex};
+use pdk_test::services::flex::{FlexConfig, Flex, PolicyConfig};
 use pdk_test::services::httpmock::{HttpMockConfig, HttpMock};
 
 use common::*;
@@ -20,6 +20,17 @@ const FLEX_PORT: Port = 8081;
 // with a MockServer backend
 #[pdk_test]
 async fn hello() -> anyhow::Result<()> {
+
+    // Configure an HttpMock service
+    let upstream_config = HttpMockConfig::builder()
+        .port(80)
+        .hostname("backend")
+        .build();
+
+    // Configure a Flex service
+    let policy_config = PolicyConfig::builder()
+        .name(POLICY_NAME)
+        .build();
 
     // Assert on the response
     assert_eq!(202, 202);
