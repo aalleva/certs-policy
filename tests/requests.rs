@@ -5,16 +5,16 @@ use pdk_test::services::httpmock::{HttpMock, HttpMockConfig};
 async fn say_hello() -> anyhow::Result<()> {
 
     // Configure HttpMock service
-    let backend_config = HttpMockConfig::builder()
-        .hostname("backend")
-        .port(80) // Port where the service will accept requests
-        .build();
+    //let backend_config = HttpMockConfig::builder()
+    //    .hostname("backend")
+    //    .port(80) // Port where the service will accept requests
+    //    .build();
 
     // Register HTTPBin service and start the docker network
-    let composite = TestComposite::builder()
-        .with_service(backend_config)
-        .build()
-        .await?;
+    //let composite = TestComposite::builder()
+    //    .with_service(backend_config)
+    //    .build()
+    //    .await?;
 
     // Get the httpmock handle
     //let httpmock: HttpMock = composite.service()?;
