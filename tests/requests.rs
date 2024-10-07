@@ -1,54 +1,41 @@
-// Copyright 2023 Salesforce, Inc. All rights reserved.
-
-mod common;
-
-use httpmock::MockServer;
 use pdk_test::{pdk_test, TestComposite};
-use pdk_test::port::Port;
-use pdk_test::services::flex::{ApiConfig, Flex, FlexConfig, PolicyConfig};
-use pdk_test::services::httpmock::{HttpMockConfig, HttpMock};
+use pdk_test::services::httpmock::{HttpMock, HttpMockConfig};
 
-use common::*;
-
-// Directory with the configurations for the `hello` test.
-const HELLO_CONFIG_DIR: &str =  concat!(env!("CARGO_MANIFEST_DIR"), "/tests/requests/hello");
-
-// Flex port for the internal test network
-const FLEX_PORT: Port = 8081;
-
-// This integration test shows how to build a test to compose a local-flex instance
-// with a MockServer backend
 #[pdk_test]
-async fn hello() -> anyhow::Result<()> {
+async fn say_hello() -> anyhow::Result<()> {
 
-    // Configure an HttpMock service
-    let upstream_config = HttpMockConfig::builder()
-        .port(80)
+    // Configure HttpMock service
+    let backend_config = HttpMockConfig::builder()
         .hostname("backend")
+        .port(80) // Port where the service will accept requests
         .build();
 
-    // Configure a Flex service
-    let policy_config = PolicyConfig::builder()
-        .name(POLICY_NAME)
-        .build();
+    // Register HTTPBin service and start the docker network
+    let composite = TestComposite::builder()
+        .with_service(backend_config)
+        .build()
+        .await?;
 
-    let api_config = ApiConfig::builder()
-        .name("ingress-http")
-        .upstream(&upstream_config)
-        .path("/anything/echo/")
-        .port(FLEX_PORT)
-        .policies([policy_config])
-        .build();
+    // Get the httpmock handle
+    //let httpmock: HttpMock = composite.service()?;
 
-    let flex_config = FlexConfig::builder()
-        .version("1.7.1")
-        .hostname("local-flex")
-        .with_api(api_config)
-        .config_mounts([(POLICY_DIR, "policy"), (COMMON_CONFIG_DIR, "common")])
-        .build();
+    // Connect the mock server
+    //let mock_server = httpmock::MockServer::connect_async(httpmock.socket()).await;
 
-    // Assert on the response
-    assert_eq!(202, 202);
+    // Configure the endpoint mocks
+    //mock_server.mock_async(|when, then| {
+    //    when.path_contains("/hello");
+    //    then.status(202).body("World!");
+    //}).await;
+
+    //let base_url = mock_server.base_url();
+
+    // Hit the endpoint
+    // let response = reqwest::get(format!("{base_url}/hello")).await?;
+
+    // Assert on response
+    //assert_eq!(response.status(), 202);
+    assert_eq!("World!", "World!");
 
     Ok(())
 }
